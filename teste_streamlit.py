@@ -19,9 +19,6 @@ st.text("Faça upload de uma imagem de flor para classificação.")
 
 # Carregar o modelo salvo
 model = load_model("flower_model.h5")
-model.compile(optimizer=Adam(learning_rate=0.00122195324402186004), 
-              loss='sparse_categorical_crossentropy', 
-              metrics=['accuracy'])
 
 with open("label_encoder.pkl", "rb") as f:
     nomes_codif = pickle.load(f)
