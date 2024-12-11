@@ -7,11 +7,11 @@ Created on Wed Dec 11 11:54:31 2024
 
 import streamlit as st
 import numpy as np
-import cv2
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import img_to_array
 from tensorflow.keras.optimizers import Adam
 import pickle
+from PIL import Image
 
 # Configuração do Streamlit
 st.title("Classificador de Flores")
@@ -33,11 +33,10 @@ IMG_SIZE = 224
 # Função de predição
 def predict_image(image):
     try:
-        # Pré-processamento
-        img = cv2.resize(image, (IMG_SIZE, IMG_SIZE))
-        img = img.astype("float32") / 255.0
-        img = img_to_array(img)
-        img = np.expand_dims(img, axis=0)
+        # Pré-processamento com Pillow
+        img = image.resize((IMG_SIZE, IMG_SIZE))  # Redimensionar a imagem
+        img = np.array(img) / 255.0  # Normalizar
+        img = np.expand_dims(img, axis=0)  # Adicionar dimensão para lotes (batch)
 
         # Predição
         predictions = model.predict(img)
@@ -53,13 +52,12 @@ def predict_image(image):
 uploaded_file = st.file_uploader("Escolha uma imagem de flor...", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
-    # Converter o arquivo carregado em uma imagem
-    file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
-    image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+    # Abrir a imagem com Pillow
+    image = Image.open(uploaded_file)
 
     if image is not None:
         # Mostrar a imagem carregada
-        st.image(image, channels="BGR", caption="Imagem carregada", use_column_width=True)
+        st.image(image, caption="Imagem carregada", use_column_width=True)
 
         # Fazer a predição
         predicted_class, confidence = predict_image(image)
