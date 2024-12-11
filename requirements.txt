@@ -1,6 +1,5 @@
-fastapi
-uvicorn
+streamlit
 tensorflow
-opencv-python-headless
+opencv-python
 numpy
-pickle
+pillow
